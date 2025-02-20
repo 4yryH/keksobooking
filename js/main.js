@@ -52,11 +52,10 @@ const getNumberFractional = function (minNumber = 0, maxNumber = 100, decimals =
 
   let setOfNumber = [];
   for (let i = 0; i < attempts; i++) {
-    let someNumber = (Math.random() * (maxNumber - minNumber + 1) + minNumber).toFixed(decimals);
-    setOfNumber.push(someNumber);
+    let someNumber = (Math.random() * (maxNumber - minNumber) + minNumber).toFixed(decimals);
+    setOfNumber.push(parseFloat(someNumber));
   }
-
   return `Набор случайных чисел: ${setOfNumber}, в диапазоне от: ${minNumber} до ${maxNumber}`;
 }
 
-getNumberFractional(2, 2);
+getNumberFractional();
