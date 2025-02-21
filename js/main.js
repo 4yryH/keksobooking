@@ -43,15 +43,15 @@ const getNumberFractional = function (minNumber = 0.13, maxNumber = 10.2102, dec
     if (!num.toString().includes('.')) {
       return 0;
     } else {
-      num.toString().split('.')[1].length;
+      return num.toString().split('.')[1].length;
     }
   }
 
   let minDecimals = countDecimals(minNumber);
   let maxDecimals = countDecimals(maxNumber);
 
-  if (maxDecimals > decimals || minDecimals > decimals) {
-    return 'Введите в диапазон число, с количеством знаков не превышающее ограничение. Или измените ограничение количества знаков после запятой'
+  if (minDecimals > decimals || maxDecimals > decimals) {
+    return 'Введите в диапазон числа, с количеством знаков не превышающее ограничение. Или измените ограничение количества знаков после запятой'
   }
 
   if (minNumber < 0 || maxNumber < 0) {
