@@ -37,7 +37,23 @@ getRandomNumber();
  Например, 1.1, 1.2 — корректный диапазон.
  */
 
-const getNumberFractional = function (minNumber = 0, maxNumber = 100, decimals = 2, attempts = 1) {
+const getNumberFractional = function (minNumber = 0.13, maxNumber = 10.2102, decimals = 2, attempts = 1) {
+
+  let countDecimals = function (num) {
+    if (!num.toString().includes('.')) {
+      return 0;
+    } else {
+      num.toString().split('.')[1].length;
+    }
+  }
+
+  let minDecimals = countDecimals(minNumber);
+  let maxDecimals = countDecimals(maxNumber);
+
+  if (maxDecimals > decimals || minDecimals > decimals) {
+    return 'Введите в диапазон число, с количеством знаков не превышающее ограничение. Или измените ограничение количества знаков после запятой'
+  }
+
   if (minNumber < 0 || maxNumber < 0) {
     return 'Задайте диапазон с положительными числами!';
   }
@@ -55,7 +71,10 @@ const getNumberFractional = function (minNumber = 0, maxNumber = 100, decimals =
     let someNumber = (Math.random() * (maxNumber - minNumber) + minNumber).toFixed(decimals);
     setOfNumber.push(parseFloat(someNumber));
   }
-  return `Набор случайных чисел: ${setOfNumber}, в диапазоне от: ${minNumber} до ${maxNumber}`;
+  return {
+    message: `Набор случайных чисел: в диапазоне от ${minNumber} до ${maxNumber}`,
+    numbers: setOfNumber
+  };
 }
 
 getNumberFractional();
