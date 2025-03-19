@@ -1,9 +1,11 @@
 import {getNumberFractional} from './utils.js';
 
 // data for location
-const location = {
-  x: getNumberFractional(35.65000, 35.70000, 5),
-  y: getNumberFractional(139.70000, 139.80000, 5),
+const location = function () {
+  return {
+    x: getNumberFractional(35.65000, 35.70000, 5),
+    y: getNumberFractional(139.70000, 139.80000, 5),
+  }
 };
 
 // data for author
@@ -31,14 +33,21 @@ const title = [
   'Сказочный дворец',
   'Райский уголок'];
 
-const address = [
-  'location.x: ' + location.x,
-  'location.y: ' + location.y,
-];
+const address = new Array(10).fill(null).map(() => location())
+// console.log(address);
+// const address = location()
 
 const price = [1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000];
 
 const type = ['palace', 'flat', 'house', 'hotel', 'bungalow'];
+
+const typeTranslation = {
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец',
+  hotel: 'Отель',
+};
 
 const rooms = [1, 2, 3, 4, 5];
 
@@ -70,5 +79,19 @@ const photos = [
 ];
 
 export {
-  avatar, title, address, price, type, rooms, guests, checkin, checkout, features, description, photos, location
+  avatar,
+  typeTranslation,
+  title,
+  address,
+  price,
+  type,
+  rooms,
+  guests,
+  checkin,
+  checkout,
+  features,
+  description,
+  photos,
+  location
 };
+

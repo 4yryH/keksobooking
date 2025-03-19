@@ -1,3 +1,6 @@
-import {similarAdvertisements} from './create-advertisement.js';
+// import './create-advertisement.js';
+import './form.js';
+import './map.js';
+import {formAdvertisementSubmit} from './form.js'
 
-console.log(similarAdvertisements);
+formAdvertisementSubmit();
