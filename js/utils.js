@@ -122,7 +122,7 @@ const showError = () => {
 const onSuccess = () => {
   const successTemplate = document.querySelector('#success').content.querySelector('.success');
   const successContainer = successTemplate.cloneNode(true);
-  const formResetButton = successContainer.querySelector('.ad-form__reset');
+  const adForm = document.querySelector('.ad-form');
 
   document.body.append(successContainer);
 
@@ -149,7 +149,10 @@ const onSuccess = () => {
 
   document.addEventListener('click', onDocumentClick);
   document.addEventListener('keydown', onEscKeyDown);
-  formResetButton.click()
+
+  if (adForm) {
+    adForm.reset()
+  }
 };
 
 export {getRandomNumber, getNumberFractional, getRandomUniqueElement, getRandomArrayElement, showAlert, showError, onSuccess};

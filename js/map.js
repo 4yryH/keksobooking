@@ -1,14 +1,17 @@
-// import {similarAdvertisements} from './create-advertisement.js';
-// import {address} from './data.js';
+/* global L:readonly */
+
 import {formAddress} from './form.js';
-import {renderAdvertisement} from './render-advertisements.js';
-import {fetchAdvertisements} from './fetch-data.js'
+import {fetchAdvertisements} from './fetch-data.js';
+import {filterAdvertisements} from './filter.js';
+import {renderMarkers} from './render-advertisement-map.js';
 import {showAlert} from './utils.js';
 
 const adForm = document.querySelector('.ad-form');
 const elementsAdForm = adForm.elements;
 const mapFilters = document.querySelector('.map__filters');
 const elementsMapFilters = mapFilters.elements;
+const ADVERTISEMENT_LIMIT = 10;
+const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 
 // Отключаем все формы
 const formDisabled = function () {
@@ -20,7 +23,7 @@ const formDisabled = function () {
   for (let j = 0; j < elementsMapFilters.length; j++) {
     elementsMapFilters[j].disabled = true;
   }
-}
+};
 
 formDisabled();
 
@@ -49,13 +52,12 @@ L.tileLayer(
   },
 ).addTo(map);
 
-
-// кастомный главный пин
+// Кастомный главный пин
 const mainPinIcon = L.icon({
   iconUrl: '../leaflet/img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
-})
+});
 
 // Задаем координаты главного маркера. Разрешаем его перетаскивать
 const mainMarker = L.marker(
@@ -67,7 +69,7 @@ const mainMarker = L.marker(
     draggable: true,
     icon: mainPinIcon,
   },
-)
+);
 
 // Добавляем маркер на карту
 mainMarker.addTo(map);
@@ -80,65 +82,45 @@ let mainMarkerAddress = {
 
 // Передача координат в форму ввода от маркера на карте
 mainMarker.on('move', (evt) => {
-  mainMarkerAddress = evt.target.getLatLng()
-  return formAddress.value = `lat: ${mainMarkerAddress.lat.toFixed(5)}, lng: ${mainMarkerAddress.lng.toFixed(5)}`;
+  mainMarkerAddress = evt.target.getLatLng();
+  return (formAddress.value = `lat: ${mainMarkerAddress.lat.toFixed(5)}, lng: ${mainMarkerAddress.lng.toFixed(5)}`);
 });
 
-// Генерируем маркеры с описанием объявлений из симуляции объявлений
-// address.forEach(({x, y}, index) => {
-//   const pinIcon = L.icon({ // кастомный пин
-//     iconUrl: '../leaflet/img/pin.svg',
-//     iconSize: [40, 40],
-//     iconAnchor: [20, 40],
-//   });
-//
-//   const marker = L.marker(
-//     [x, y],
-//     {
-//       icon: pinIcon,
-//     },
-//   );
-//   marker
-//     .addTo(map)
-//     .bindPopup(similarAdvertisements[index]);
-// })
+// Слой для меток
+const markersLayer = L.layerGroup().addTo(map);
 
-// Удалить маркер
-// mainPinMarker.remove();
+// Обработчик фильтра
+const onFilterChange = () => {
+  // Получаем значения фильтров
+  const filters = {
+    type: mapFilters.querySelector('[name="housing-type"]').value,
+    price: mapFilters.querySelector('[name="housing-price"]').value,
+    rooms: mapFilters.querySelector('[name="housing-rooms"]').value,
+    guests: mapFilters.querySelector('[name="housing-guests"]').value,
+    features: Array.from(mapFilters.querySelectorAll('#housing-features input:checked')).map((input) => input.value),
+  };
 
-const renderMarkers = (advertisements, cardTemplate, map) => {
-  const advertisementElements = renderAdvertisement(advertisements, cardTemplate);
-
-  advertisements.forEach((advertisement, index) => {
-    const {location} = advertisement;
-
-    const pinIcon = L.icon({
-      iconUrl: '../leaflet/img/pin.svg',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
+  // Фильтруем объявления
+  fetchAdvertisements()
+    .then((advertisements) => {
+      const filteredAdvertisements = filterAdvertisements(advertisements, filters);
+      renderMarkers(filteredAdvertisements, cardTemplate, map, ADVERTISEMENT_LIMIT, markersLayer); // Ограничиваем до 10 объявлений
+    })
+    .catch(() => {
+      showAlert('Не удалось загрузить данные. Попробуйте обновить страницу!');
     });
-
-    const marker = L.marker(
-      [location.lat, location.lng],
-      {
-        icon: pinIcon,
-      },
-    );
-
-    marker
-      .addTo(map)
-      .bindPopup(advertisementElements[index]);
-  });
 };
 
-const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
+// Отслеживаем изменения в форме
+mapFilters.addEventListener('change', onFilterChange);
 
+// Первоначальная загрузка объявлений
 fetchAdvertisements()
   .then((advertisements) => {
-    renderMarkers(advertisements, cardTemplate, map);
+    renderMarkers(advertisements, cardTemplate, map, ADVERTISEMENT_LIMIT, markersLayer);
   })
   .catch(() => {
-    showAlert('Не удалось загрузить данные. Попробуйте обновить страницу!')
+    showAlert('Не удалось загрузить данные. Попробуйте обновить страницу!');
   });
 
-export {mainMarkerAddress}
+export { mainMarkerAddress, formDisabled };

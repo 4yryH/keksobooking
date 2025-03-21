@@ -1,4 +1,5 @@
 import {typeTranslation} from './data.js'
+
 const renderAdvertisement = (advertisements, cardTemplate) => {
   const advertisementElements = [];
 
@@ -43,7 +44,7 @@ const renderAdvertisement = (advertisements, cardTemplate) => {
     advertisementElements.push(advertisementElement);
   });
 
-  return advertisementElements;
+  return advertisementElements
 };
 
 export {renderAdvertisement};

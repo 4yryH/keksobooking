@@ -61,7 +61,6 @@ timeOut.addEventListener('change', function () {
 });
 
 // Форма адрес (координаты). По умолчанию запрещен ввод данных пользователем
-
 formAddress.readOnly = true;
 formAddress.value = `lat: ${mainMarkerAddress.lat.toFixed(5)}, lng: ${mainMarkerAddress.lng.toFixed(5)}`;
 
@@ -97,7 +96,7 @@ roomNumberInput.addEventListener('change', updateCapacityOptions);
 updateCapacityOptions()
 
 // Отмена дефолтной отправки формы, отправка через JS без перезагрузки страницы
-const formAdvertisementSubmit = (onSuccess) => {
+const formAdvertisementSubmit = () => {
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
@@ -110,9 +109,6 @@ const formAdvertisementSubmit = (onSuccess) => {
         body: formData,
       },
     ).then((response) => {
-      console.log('response: ', response);
-      console.log('reponse.ok: ', response.ok);
-
       if (response.ok) {
         onSuccess()
       } else {
