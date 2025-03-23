@@ -1,4 +1,4 @@
-/* global L:readonly */
+/* global L:readonly, _:readonly */
 
 import {formAddress} from './form.js';
 import {fetchAdvertisements} from './fetch-data.js';
@@ -111,8 +111,11 @@ const onFilterChange = () => {
     });
 };
 
+// Делаем задержку отрисовки объявлений во время взаимодействия с фильтром через lodash
+const throttledOnFilterChange = _.throttle(onFilterChange, 500);
+
 // Отслеживаем изменения в форме
-mapFilters.addEventListener('change', onFilterChange);
+mapFilters.addEventListener('change', throttledOnFilterChange);
 
 // Первоначальная загрузка объявлений
 fetchAdvertisements()
